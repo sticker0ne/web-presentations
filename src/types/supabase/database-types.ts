@@ -18,6 +18,7 @@ export interface Database {
           type: string
           imageFileName: string | null
           presentationFileName: string | null
+          description: string | null
         }
         Insert: {
           id?: number
@@ -27,6 +28,7 @@ export interface Database {
           type: string
           imageFileName?: string | null
           presentationFileName?: string | null
+          description?: string | null
         }
         Update: {
           id?: number
@@ -36,6 +38,7 @@ export interface Database {
           type?: string
           imageFileName?: string | null
           presentationFileName?: string | null
+          description?: string | null
         }
       }
     }

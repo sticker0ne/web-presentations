@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { ref } from "vue";
 import type { Database } from "@/types/supabase/database-types";
-import type { IApartment } from "@/modules/apartments/services/apartments.types";
+import type { IApartment } from "@/modules/apartments/apartments.types";
 
 export function createCountersService(initPayload: { supabaseUrl: string; supabaseAnonKey: string }) {
   const client = createClient<Database>(initPayload.supabaseUrl, initPayload.supabaseAnonKey);

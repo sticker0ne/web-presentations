@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { useApartmentsService } from "@/modules/apartments/services/apartments.service";
+  import { useApartmentsService } from "@/modules/apartments/apartments.service";
   import { onBeforeMount } from "vue";
 
   const { fetchApartments, apartments } = useApartmentsService();
@@ -10,9 +10,7 @@
 </script>
 
 <template>
-  <div class="apartments-filters">
-    {{ apartments }}
-  </div>
+  <div class="apartments-filters" />
 </template>
 
 <style lang="scss">
