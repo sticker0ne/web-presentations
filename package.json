@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
+    "create404page": "cp ./docs/index.html ./docs/404.html",
     "build:gh-pages": "vue-tsc --noEmit && OUT_DIR=docs ASSETS_BASE=/web-presentations/ vite build",
     "preview": "vite preview --port 5050",
     "typecheck": "vue-tsc --noEmit",
