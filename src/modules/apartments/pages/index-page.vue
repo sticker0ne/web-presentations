@@ -2,13 +2,21 @@
   import Card from "primevue/card";
   import ApartmentsFilters from "@/modules/apartments/components/HOC/apartments-filters.vue";
   import { useApartmentsService } from "@/modules/apartments/apartments.service";
-  const { apartments } = useApartmentsService();
 
   import {
     buildApartmentImageUrl,
     getApartmentTypeTitle,
     getApartmentPositionTitle,
   } from "@/modules/apartments/apartments.utils";
+  import { useRouter } from "vue-router";
+  import { RouteNames } from "@/router/router.types";
+
+  const { apartments } = useApartmentsService();
+  const router = useRouter();
+
+  function onCardClick(cardId: string | number) {
+    router.push({ name: RouteNames.apartment, params: { id: cardId } });
+  }
 </script>
 
 <template>
@@ -16,9 +24,20 @@
     <apartments-filters />
     <div class="cards-container w-full flex align-items-center justify-content-center">
       <div class="cards">
-        <Card v-for="apartment in apartments" :key="apartment.id" style="width: 20em" class="mb-2">
+        <Card
+          v-for="apartment in apartments"
+          :key="apartment.id"
+          style="width: 20em"
+          class="mb-2"
+          @click="onCardClick(apartment.id)"
+        >
           <template #header>
-            <img class="border-round-top" :src="buildApartmentImageUrl(apartment.imageFileName)" style="width: 20em" />
+            <img
+              v-if="apartment.imageFileName"
+              class="border-round-top"
+              :src="buildApartmentImageUrl(apartment.imageFileName)"
+              style="width: 20em"
+            />
           </template>
           <template #title> {{ apartment.title }}</template>
           <template #subtitle>

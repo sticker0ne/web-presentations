@@ -5,6 +5,7 @@ import type { IApartment } from "@/modules/apartments/apartments.types";
 
 export function createCountersService(initPayload: { supabaseUrl: string; supabaseAnonKey: string }) {
   const client = createClient<Database>(initPayload.supabaseUrl, initPayload.supabaseAnonKey);
+
   const apartments = ref<IApartment[]>([]);
 
   async function fetchApartments() {
@@ -14,7 +15,15 @@ export function createCountersService(initPayload: { supabaseUrl: string; supaba
     if (data) apartments.value = data;
   }
 
-  return { apartments, fetchApartments };
+  const apartment = ref<IApartment | null>(null);
+
+  async function fetchApartment(id: string | number) {
+    const { data, error } = await client.from("apartments").select().eq("id", id);
+    if (error) console.log(error);
+    if (data) apartment.value = data[0] || null;
+  }
+
+  return { apartments, fetchApartments, apartment, fetchApartment };
 }
 
 let service!: ReturnType<typeof createCountersService>;
