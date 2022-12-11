@@ -5,21 +5,19 @@
 
   import { useApartmentsService } from "@/modules/apartments/apartments.service";
   import { computed } from "vue";
-  import {
-    ApartmentPosition,
-    apartmentPositionToTitleMap,
-    ApartmentType,
-    apartmentTypeToTitleMap,
-  } from "@/modules/apartments/apartments.types";
+  import type { ApartmentPosition, ApartmentType } from "@/modules/apartments/apartments.types";
+  import { apartmentPositionToTitleMap, apartmentTypeToTitleMap } from "@/modules/apartments/apartments.types";
 
   const { applyFilters, remoteFilters, localFilters, resultFilters, shouldShowApplyButton } = useApartmentsService();
 
-  function onPriceSliderChange(value: [number, number]) {
+  function onPriceSliderChange(event: Event) {
+    const value = event as unknown as [number, number];
     localFilters.value.minPrice = value[0];
     localFilters.value.maxPrice = value[1];
   }
 
-  function onSquareSliderChange(value: [number, number]) {
+  function onSquareSliderChange(event: Event) {
+    const value = event as unknown as [number, number];
     localFilters.value.minSquare = value[0];
     localFilters.value.maxSquare = value[1];
   }

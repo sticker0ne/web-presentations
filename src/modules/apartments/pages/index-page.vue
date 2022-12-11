@@ -57,7 +57,7 @@
           <template #title> {{ apartment.title }}</template>
           <template #subtitle>
             {{ getApartmentTypeTitle(apartment.type) }}, {{ getApartmentPositionTitle(apartment.position) }},
-            {{ apartment.price }}&nbsp;₽/мес.
+            {{ apartment.square }} м2, {{ apartment.price }}&nbsp;₽/мес.
           </template>
           <template #content>
             <p class="mb-0">
