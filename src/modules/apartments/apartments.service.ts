@@ -8,9 +8,14 @@ import type {
   IApartmentResultFilters,
 } from "@/modules/apartments/apartments.types";
 import { apartmentPositionToTitleMap, apartmentTypeToTitleMap } from "@/modules/apartments/apartments.types";
+import { useRouter } from "vue-router";
+
+const FILTERS_QUERY_KEY = "filters";
 
 export function createCountersService(initPayload: { supabaseUrl: string; supabaseAnonKey: string }) {
   const client = createClient<Database>(initPayload.supabaseUrl, initPayload.supabaseAnonKey);
+
+  const router = useRouter();
 
   const apartments = ref<IApartment[]>([]);
 
@@ -66,11 +71,34 @@ export function createCountersService(initPayload: { supabaseUrl: string; supaba
     if (data) remoteFilters.value = data.data;
   }
 
+  function applyFilters() {
+    const filtersString = JSON.stringify(resultFilters.value);
+    router.replace({ query: { [FILTERS_QUERY_KEY]: filtersString } });
+    fetchApartments();
+  }
+
+  function parseFiltersFromUrl() {
+    const { [FILTERS_QUERY_KEY]: filtersString } = router.currentRoute.value.query;
+
+    if (!filtersString || typeof filtersString !== "string") return;
+
+    try {
+      const filters = JSON.parse(filtersString);
+      localFilters.value = filters;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   const shouldShowApplyButton = ref(false);
 
-  watch(localFilters.value, () => {
-    shouldShowApplyButton.value = true;
-  });
+  watch(
+    localFilters,
+    () => {
+      shouldShowApplyButton.value = true;
+    },
+    { deep: true },
+  );
 
   return {
     apartments,
@@ -82,6 +110,8 @@ export function createCountersService(initPayload: { supabaseUrl: string; supaba
     localFilters,
     resultFilters,
     shouldShowApplyButton,
+    applyFilters,
+    parseFiltersFromUrl,
   };
 }
 

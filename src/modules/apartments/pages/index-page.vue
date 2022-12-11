@@ -15,10 +15,11 @@
   import ApartmentsFilters from "@/modules/apartments/components/HOC/apartments-filters.vue";
 
   const showFilters = ref(false);
-  const { apartments, fetchApartments, fetchFilters } = useApartmentsService();
+  const { apartments, parseFiltersFromUrl, fetchApartments, fetchFilters } = useApartmentsService();
   const router = useRouter();
 
   onMounted(async () => {
+    parseFiltersFromUrl();
     await fetchFilters();
     fetchApartments();
   });

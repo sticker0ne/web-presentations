@@ -12,7 +12,7 @@
     apartmentTypeToTitleMap,
   } from "@/modules/apartments/apartments.types";
 
-  const { fetchApartments, remoteFilters, localFilters, resultFilters, shouldShowApplyButton } = useApartmentsService();
+  const { applyFilters, remoteFilters, localFilters, resultFilters, shouldShowApplyButton } = useApartmentsService();
 
   function onPriceSliderChange(value: [number, number]) {
     localFilters.value.minPrice = value[0];
@@ -46,7 +46,7 @@
   }
 
   function onApplyButtonClick() {
-    fetchApartments();
+    applyFilters();
   }
 </script>
 
