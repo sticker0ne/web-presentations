@@ -4,7 +4,7 @@
   import Button from "primevue/button";
 
   import { useApartmentsService } from "@/modules/apartments/apartments.service";
-  import { computed, onBeforeMount } from "vue";
+  import { computed } from "vue";
   import {
     ApartmentPosition,
     apartmentPositionToTitleMap,
@@ -12,7 +12,7 @@
     apartmentTypeToTitleMap,
   } from "@/modules/apartments/apartments.types";
 
-  const { fetchFilters, remoteFilters, localFilters, resultFilters, shouldShowApplyButton } = useApartmentsService();
+  const { fetchApartments, remoteFilters, localFilters, resultFilters, shouldShowApplyButton } = useApartmentsService();
 
   function onPriceSliderChange(value: [number, number]) {
     localFilters.value.minPrice = value[0];
@@ -43,6 +43,10 @@
 
   function onPositionSelectChange(event: any) {
     localFilters.value.positions = event.value.map((item: { value: ApartmentPosition }) => item.value);
+  }
+
+  function onApplyButtonClick() {
+    fetchApartments();
   }
 </script>
 
@@ -97,7 +101,7 @@
     </div>
 
     <div v-if="shouldShowApplyButton" class="apply-button mt-7">
-      <Button label="Применить" />
+      <Button label="Применить" @click="onApplyButtonClick" />
     </div>
   </div>
 </template>

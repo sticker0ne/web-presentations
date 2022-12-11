@@ -15,6 +15,8 @@ export function createCountersService(initPayload: { supabaseUrl: string; supaba
   const apartments = ref<IApartment[]>([]);
 
   async function fetchApartments() {
+    shouldShowApplyButton.value = false;
+
     const { minPrice, maxPrice, minSquare, maxSquare, types, positions } = resultFilters.value;
 
     const typeValues = types.length ? types : Object.keys(apartmentTypeToTitleMap);
@@ -38,7 +40,7 @@ export function createCountersService(initPayload: { supabaseUrl: string; supaba
 
   async function fetchApartment(id: string | number) {
     const { data, error } = await client.from("apartments").select().eq("id", id);
-    if (error) console.log(error);
+    if (error) console.error(error);
     if (data) apartment.value = data[0] || null;
   }
 
