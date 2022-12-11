@@ -1,15 +1,5 @@
 import type { ApartmentPosition, ApartmentType } from "@/modules/apartments/apartments.types";
-
-const apartmentTypeToTitleMap: Record<ApartmentType, string> = {
-  rent: "Аренда",
-  purchase: "Продажа",
-};
-
-const apartmentPositionToTitleMap: Record<ApartmentPosition, string> = {
-  moscow: "Москва",
-  moscow_region: "Московская область",
-  region: "Регион",
-};
+import { apartmentPositionToTitleMap, apartmentTypeToTitleMap } from "@/modules/apartments/apartments.types";
 
 export function buildApartmentImageUrl(fileName: string) {
   return import.meta.env.APP_APARTMENT_IMAGE_LINK_PREFIX + fileName;
