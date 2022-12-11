@@ -1,7 +1,12 @@
 import { createClient } from "@supabase/supabase-js";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import type { Database } from "@/types/supabase/database-types";
-import type { IApartment } from "@/modules/apartments/apartments.types";
+import type {
+  IApartment,
+  IApartmentLocalFilters,
+  IApartmentRemoteFilters,
+  IApartmentResultFilters,
+} from "@/modules/apartments/apartments.types";
 
 export function createCountersService(initPayload: { supabaseUrl: string; supabaseAnonKey: string }) {
   const client = createClient<Database>(initPayload.supabaseUrl, initPayload.supabaseAnonKey);
@@ -23,7 +28,41 @@ export function createCountersService(initPayload: { supabaseUrl: string; supaba
     if (data) apartment.value = data[0] || null;
   }
 
-  return { apartments, fetchApartments, apartment, fetchApartment };
+  const remoteFilters = ref<IApartmentRemoteFilters | null>(null);
+  const localFilters = ref<IApartmentLocalFilters>({});
+
+  const resultFilters = computed<IApartmentResultFilters>(() => {
+    return {
+      minPrice: localFilters.value?.minPrice || remoteFilters.value?.minPrice || 0,
+      maxPrice: localFilters.value?.maxPrice || remoteFilters.value?.maxPrice || 0,
+      minSquare: localFilters.value?.minSquare || remoteFilters.value?.minSquare || 0,
+      maxSquare: localFilters.value?.maxSquare || remoteFilters.value?.maxSquare || 0,
+      types: localFilters.value?.types || [],
+      positions: localFilters.value?.positions || [],
+    };
+  });
+
+  async function fetchFilters() {
+    const { data, error } = await client.functions.invoke("get-filters");
+
+    if (error) console.error(error);
+
+    if (data) {
+      remoteFilters.value = data.data;
+      console.log(remoteFilters.value);
+    }
+  }
+
+  return {
+    apartments,
+    fetchApartments,
+    apartment,
+    fetchApartment,
+    fetchFilters,
+    remoteFilters,
+    localFilters,
+    resultFilters,
+  };
 }
 
 let service!: ReturnType<typeof createCountersService>;

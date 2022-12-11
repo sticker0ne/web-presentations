@@ -1,8 +1,9 @@
 <script setup lang="ts">
   import Card from "primevue/card";
-  import ApartmentsFilters from "@/modules/apartments/components/HOC/apartments-filters.vue";
-  import { useApartmentsService } from "@/modules/apartments/apartments.service";
+  import Sidebar from "primevue/sidebar";
+  import Button from "primevue/button";
 
+  import { useApartmentsService } from "@/modules/apartments/apartments.service";
   import {
     buildApartmentImageUrl,
     getApartmentTypeTitle,
@@ -10,9 +11,16 @@
   } from "@/modules/apartments/apartments.utils";
   import { useRouter } from "vue-router";
   import { RouteNames } from "@/router/router.types";
+  import { onMounted, ref } from "vue";
+  import ApartmentsFilters from "@/modules/apartments/components/HOC/apartments-filters.vue";
 
-  const { apartments } = useApartmentsService();
+  const showFilters = ref(false);
+  const { apartments, fetchApartments } = useApartmentsService();
   const router = useRouter();
+
+  onMounted(() => {
+    fetchApartments();
+  });
 
   function onCardClick(cardId: string | number) {
     router.push({ name: RouteNames.apartment, params: { id: cardId } });
@@ -21,7 +29,12 @@
 
 <template>
   <div class="apartments-index-page p-1">
-    <apartments-filters />
+    <Sidebar v-model:visible="showFilters" modal="false"><apartments-filters /></Sidebar>
+
+    <div class="absolute top-0 left-0 pt-3 pl-3">
+      <Button icon="pi pi-filter" @click="showFilters = true" />
+    </div>
+
     <div class="cards-container w-full flex align-items-center justify-content-center">
       <div class="cards">
         <Card
