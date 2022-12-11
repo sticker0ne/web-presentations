@@ -33,7 +33,7 @@
   <div class="apartments-index-page p-1">
     <Sidebar v-model:visible="showFilters" :modal="false"><apartments-filters /></Sidebar>
 
-    <div class="absolute top-0 left-0 pt-3 pl-3">
+    <div class="fixed top-0 left-0 pt-3 pl-3">
       <Button icon="pi pi-filter" @click="showFilters = true" />
     </div>
 
