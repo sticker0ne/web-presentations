@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import type { Database } from "@/types/supabase/database-types";
 import type {
   IApartment,
@@ -7,6 +7,7 @@ import type {
   IApartmentRemoteFilters,
   IApartmentResultFilters,
 } from "@/modules/apartments/apartments.types";
+import { apartmentPositionToTitleMap, apartmentTypeToTitleMap } from "@/modules/apartments/apartments.types";
 
 export function createCountersService(initPayload: { supabaseUrl: string; supabaseAnonKey: string }) {
   const client = createClient<Database>(initPayload.supabaseUrl, initPayload.supabaseAnonKey);
@@ -14,9 +15,22 @@ export function createCountersService(initPayload: { supabaseUrl: string; supaba
   const apartments = ref<IApartment[]>([]);
 
   async function fetchApartments() {
-    const { data, error } = await client.from("apartments").select();
-    if (error) console.error(error);
+    const { minPrice, maxPrice, minSquare, maxSquare, types, positions } = resultFilters.value;
 
+    const typeValues = types.length ? types : Object.keys(apartmentTypeToTitleMap);
+    const positionValues = positions.length ? positions : Object.keys(apartmentPositionToTitleMap);
+
+    const { data, error } = await client
+      .from("apartments")
+      .select()
+      .gte("price", minPrice)
+      .lte("price", maxPrice)
+      .gte("square", minSquare)
+      .lte("square", maxSquare)
+      .in("type", typeValues)
+      .in("position", positionValues);
+
+    if (error) console.error(error);
     if (data) apartments.value = data;
   }
 
@@ -47,11 +61,14 @@ export function createCountersService(initPayload: { supabaseUrl: string; supaba
 
     if (error) console.error(error);
 
-    if (data) {
-      remoteFilters.value = data.data;
-      console.log(remoteFilters.value);
-    }
+    if (data) remoteFilters.value = data.data;
   }
+
+  const shouldShowApplyButton = ref(false);
+
+  watch(localFilters.value, () => {
+    shouldShowApplyButton.value = true;
+  });
 
   return {
     apartments,
@@ -62,6 +79,7 @@ export function createCountersService(initPayload: { supabaseUrl: string; supaba
     remoteFilters,
     localFilters,
     resultFilters,
+    shouldShowApplyButton,
   };
 }
 

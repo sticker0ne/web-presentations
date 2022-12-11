@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import Slider from "primevue/slider";
   import MultiSelect from "primevue/multiselect";
+  import Button from "primevue/button";
 
   import { useApartmentsService } from "@/modules/apartments/apartments.service";
   import { computed, onBeforeMount } from "vue";
@@ -11,7 +12,7 @@
     apartmentTypeToTitleMap,
   } from "@/modules/apartments/apartments.types";
 
-  const { fetchFilters, remoteFilters, localFilters, resultFilters } = useApartmentsService();
+  const { fetchFilters, remoteFilters, localFilters, resultFilters, shouldShowApplyButton } = useApartmentsService();
 
   function onPriceSliderChange(value: [number, number]) {
     localFilters.value.minPrice = value[0];
@@ -43,10 +44,6 @@
   function onPositionSelectChange(event: any) {
     localFilters.value.positions = event.value.map((item: { value: ApartmentPosition }) => item.value);
   }
-
-  onBeforeMount(() => {
-    fetchFilters();
-  });
 </script>
 
 <template>
@@ -97,6 +94,10 @@
         placeholder="Выберите месторасположение"
         @change="onPositionSelectChange"
       />
+    </div>
+
+    <div v-if="shouldShowApplyButton" class="apply-button mt-7">
+      <Button label="Применить" />
     </div>
   </div>
 </template>
